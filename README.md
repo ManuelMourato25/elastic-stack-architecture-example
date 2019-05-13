@@ -1,0 +1,1 @@
+# elastic-stack-architecture-example
