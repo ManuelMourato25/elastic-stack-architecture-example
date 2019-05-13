@@ -1,0 +1,11 @@
+server {
+    listen 9299;
+    server_name <KIBANA_HOST>;
+
+location / {
+        proxy_pass http://<KIBANA_HOST>:5601;
+        auth_basic "Restricted Content";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+
+}
+}

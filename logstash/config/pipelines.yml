@@ -1,0 +1,19 @@
+# List of pipelines to be loaded by Logstash
+#
+# This document must be a list of dictionaries/hashes, where the keys/values are pipeline settings.
+# Default values for omitted settings are read from the `logstash.yml` file.
+# When declaring multiple pipelines, each MUST have its own `pipeline.id`.
+
+- pipeline.id: sql-pipeline
+  path.config: "/usr/share/logstash/pipeline/jdbc-sql-pipeline.conf"
+  pipeline.workers: 2
+  pipeline.batch.size: 50
+  pipeline.batch.delay: 50
+  pipeline.output.workers: 1
+  
+- pipeline.id: jt400-pipeline
+  path.config: "/usr/share/logstash/pipeline/jdbc-jt400-pipeline.conf"
+  pipeline.workers: 2
+  pipeline.batch.size: 50
+  pipeline.batch.delay: 50
+  pipeline.output.workers: 1

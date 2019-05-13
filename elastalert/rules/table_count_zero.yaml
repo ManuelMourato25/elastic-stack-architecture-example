@@ -1,0 +1,16 @@
+es_host: <ELASTICSEARCH_HOST>
+es_port: 9200
+name: Table_Empty_Rule
+type: frequency
+index: business-metrics
+num_events: 1
+timeframe:
+    minutes: 2
+filter:
+- script:
+    script:
+      inline: doc['count_table1'].value > 0
+alert:
+- "slack"
+slack:
+slack_webhook_url: "<SLACK_WEBHOOK>"

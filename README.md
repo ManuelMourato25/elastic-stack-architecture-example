@@ -1,1 +1,1 @@
-# elastic-stack-architecture-example
+# Monitoring Applications and Services: an ELK approach

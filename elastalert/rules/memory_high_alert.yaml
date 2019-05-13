@@ -1,0 +1,16 @@
+es_host: <ELASTICSEARCH_HOST>
+es_port: 9200
+name: Memory_Too_High_Rule
+type: frequency
+index: infrastructure-metrics
+num_events: 1
+timeframe:
+    minutes: 2
+filter:
+- range:
+     system.memory.used:
+      to: 15000000000
+alert:
+- "slack"
+slack:
+slack_webhook_url: "<SLACK_WEBHOOK>"

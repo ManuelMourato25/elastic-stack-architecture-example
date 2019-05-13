@@ -1,0 +1,68 @@
+version: '2.1'
+services:
+ elasticsearch:
+  image: docker.elastic.co/elasticsearch/elasticsearch:6.5.1
+  container_name: elasticsearch
+  network_mode: host
+  environment:
+   - discovery.type=single-node
+  ports:
+   - 9200:9200
+   - 9300:9300
+  volumes:
+   - /opt/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+   - /opt/elasticsearch/jvm.options:/etc/elasticsearch/jvm.options
+   - /opt/elasticsearch/log4j2.properties:/opt/elasticsearch/log4j2.properties
+   - /opt/elasticsearch/data:/usr/share/elasticsearch/data
+ kibana:
+  image: docker.elastic.co/kibana/kibana:6.5.1
+  container_name: kibana
+  depends_on:
+   - elasticsearch
+  network_mode: host
+  volumes:
+   - /opt/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+ metricbeat:
+  image: docker.elastic.co/beats/metricbeat:6.5.1
+  container_name: metricbeat
+  depends_on:
+   - elasticsearch
+  network_mode: host
+  volumes:
+   - /opt/metricbeat/metric-beat.yml:/usr/share/metricbeat/metricbeat.yml
+  environment:
+   - output.elasticsearch.hosts=["<ELASTICSEARCH_HOST>:9200"]
+ logstash:
+  image: docker.elastic.co/logstash/logstash:6.5.1
+  container_name: logstash
+  network_mode: host
+  ports:
+   - 9600:9600
+  volumes:
+   - /opt/logstash/config:/usr/share/logstash/config
+   - /opt/logstash/pipeline:/usr/share/logstash/pipeline
+   - /opt/logstash/data:/usr/share/logstash/data
+   - /opt/logstash/drivers:/opt/logstash/drivers
+  dns:
+   -  <DNS_IP_ONE>  # IP necessary to connect to a database instance external to where the server in which the container is running
+   -  <DNS_IP_TWO>  # IP necessary to connect to a database instance external to where the server in which the container is running
+ elastalert:
+  image: bitsensor/elastalert:1.0.0
+  container_name: elastalert
+  network_mode: host
+  ports:
+   - 3030:3030
+  volumes:
+   - /opt/elastalert/config/elastalert.yaml:/opt/elastalert/config.yaml
+   - /opt/elastalert/config/config.json:/opt/elastalert-server/config/config.json
+   - /opt/elastalert/rules:/opt/elastalert/rules
+ nginx:
+    image: nginx:1.14-alpine
+    container_name: nginx
+    volumes:
+      - /opt/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /opt/nginx/sites-enabled/kibana:/etc/nginx/conf.d/kibana.conf
+      - /opt/nginx/.htpasswd:/etc/nginx/.htpasswd
+    network_mode: host
+    ports:
+      - 9299:9299
